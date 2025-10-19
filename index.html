@@ -4,9 +4,6 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>WHO MADE THIS? YUMMY YUMMY</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;600;700&display=swap" rel="stylesheet">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
   <style>
     :root { --bg:#f8fafc; --fg:#0f172a; --card:#fff; --muted:#64748b; --border:#e2e8f0; }
@@ -20,11 +17,10 @@
     .card { background:var(--card); border: 1px solid var(--border); border-radius: 16px; padding:16px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
     .section-title { font-size: 18px; font-weight: 700; margin-bottom: 12px; text-align:center; }
     .item { display:flex; align-items:center; justify-content:space-between; border:1px solid var(--border); padding:12px; border-radius: 12px; }
-    .muted { color: var(--muted); font-size: 13px; }
     .desc { font-weight:600; white-space:pre-line; }
-    .food { font-size:15px; margin-top:4px; }
-    .qty { display:flex; align-items:center; }
-    .qty input { width: 56px; text-align:center; border-top:1px solid var(--border); border-bottom:1px solid var(--border); padding:6px 0; }
+    .food { font-size:15px; margin-top:4px; color:#334155; }
+    .qty { display:flex; align-items:center; gap:6px; }
+    .qty input { width: 64px; text-align:center; border:1px solid var(--border); padding:6px 0; border-radius:10px; }
     .btn { padding: 8px 14px; border-radius: 12px; border:1px solid var(--border); background:#fff; cursor:pointer; }
     .btn.primary { background:#0f172a; color:#fff; border-color:#0f172a; }
     .btn:disabled { opacity: .5; cursor: not-allowed; }
@@ -100,15 +96,15 @@
 
   <script>
     const ITEMS = [
-      { desc: "여기가 바로 포르투갈!", name: "에그타르트 (1개)", price: 5, category: "bread" },
-      { desc: "여기가 바로 포르투갈!", name: "에그타르트 (2개)", price: 9, category: "bread" },
-      { desc: "지금까지 이런 쫀득은 없었다", name: "쫀득쿠키", price: 6, category: "bread" },
-      { desc: "Levain보다 맛있을껄?", name: "스콘", price: 6, category: "bread" },
-      { desc: "초보의 손끝에서 나온 명작", name: "티라미수", price: 9.9, category: "bread" },
-      { desc: "단맛은 줄이고 향은 늘렸다", name: "유자에이드", price: 4.5, category: "drink" },
-      { desc: "비타민이 아니라 힐링이야", name: "자몽에이드", price: 5.5, category: "drink" },
-      { desc: "엄마가 타준 그 맛", name: "미숫가루", price: 5.5, category: "drink" },
-      { desc: "", name: "이건 그냥 디카페인 커피", price: 3, category: "drink" }
+      { desc: "여기가 바로 포르투갈!", name: "에그타르트 (1개)", price: 5, qty: 0, category: "bread" },
+      { desc: "여기가 바로 포르투갈!", name: "에그타르트 (2개)", price: 9, qty: 0, category: "bread" },
+      { desc: "지금까지 이런 쫀득은 없었다", name: "쫀득쿠키", price: 6, qty: 0, category: "bread" },
+      { desc: "Levain보다 맛있을껄?", name: "스콘", price: 6, qty: 0, category: "bread" },
+      { desc: "초보의 손끝에서 나온 명작", name: "티라미수", price: 9.9, qty: 0, category: "bread" },
+      { desc: "단맛은 줄이고 향은 늘렸다", name: "유자에이드", price: 4.5, qty: 0, category: "drink" },
+      { desc: "비타민이 아니라 힐링이야", name: "자몽에이드", price: 5.5, qty: 0, category: "drink" },
+      { desc: "엄마가 타준 그 맛", name: "미숫가루", price: 5.5, qty: 0, category: "drink" },
+      { desc: "", name: "이건 그냥 디카페인 커피", price: 3, qty: 0, category: "drink" }
     ];
 
     const listBread = document.getElementById('list-bread');
@@ -134,6 +130,7 @@
       listBread.innerHTML = "";
       listDrink.innerHTML = "";
       ITEMS.forEach(it => {
+        const qty = Number(it.qty)||0;
         const div = document.createElement('div');
         div.className = 'item';
 
@@ -152,15 +149,16 @@
         const minus = document.createElement('button');
         minus.className = 'btn';
         minus.textContent = '−';
-        minus.onclick = () => { it.qty = clamp(it.qty - 1); update(); };
+        minus.onclick = () => { it.qty = clamp((Number(it.qty)||0) - 1, 0); update(); };
         const input = document.createElement('input');
         input.type = 'number';
-        input.value = it.qty || 0;
-        input.onchange = (e) => { it.qty = clamp(Number(e.target.value)); update(); };
+        input.min = '0';
+        input.value = qty;
+        input.oninput = (e) => { it.qty = clamp(Number(e.target.value)||0, 0); update(false); };
         const plus = document.createElement('button');
         plus.className = 'btn';
         plus.textContent = '+';
-        plus.onclick = () => { it.qty = clamp(it.qty + 1); update(); };
+        plus.onclick = () => { it.qty = clamp((Number(it.qty)||0) + 1, 0); update(); };
         right.appendChild(minus);
         right.appendChild(input);
         right.appendChild(plus);
@@ -174,7 +172,7 @@
     }
 
     function calcTotal(){
-      return ITEMS.reduce((s, it) => s + it.price * (it.qty || 0), 0);
+      return ITEMS.reduce((s, it) => s + Number(it.price) * (Number(it.qty)||0), 0);
     }
 
     function venmoUrl(amount, note, handle){
@@ -196,8 +194,8 @@
       });
     }
 
-    function update(){
-      renderList();
+    function update(reRender = true){
+      if (reRender) renderList();
       const t = calcTotal();
       totalEl.textContent = money(t);
       venmoLink.style.display = 'none';
@@ -246,7 +244,7 @@
     });
 
     renderList();
-    update();
+    update(false);
   </script>
 </body>
 </html>
