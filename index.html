@@ -4,6 +4,9 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>WHO MADE THIS? YUMMY YUMMY</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;600;700&display=swap" rel="stylesheet">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
   <style>
     :root { --bg:#f8fafc; --fg:#0f172a; --card:#fff; --muted:#64748b; --border:#e2e8f0; }
@@ -17,8 +20,9 @@
     .card { background:var(--card); border: 1px solid var(--border); border-radius: 16px; padding:16px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
     .section-title { font-size: 18px; font-weight: 700; margin-bottom: 12px; text-align:center; }
     .item { display:flex; align-items:center; justify-content:space-between; border:1px solid var(--border); padding:12px; border-radius: 12px; }
+    .muted { color: var(--muted); font-size: 13px; }
     .desc { font-weight:600; white-space:pre-line; }
-    .food { font-size:15px; margin-top:4px; color:#334155; }
+    .food { font-size:15px; margin-top:4px; }
     .qty { display:flex; align-items:center; }
     .qty input { width: 56px; text-align:center; border-top:1px solid var(--border); border-bottom:1px solid var(--border); padding:6px 0; }
     .btn { padding: 8px 14px; border-radius: 12px; border:1px solid var(--border); background:#fff; cursor:pointer; }
@@ -148,15 +152,15 @@
         const minus = document.createElement('button');
         minus.className = 'btn';
         minus.textContent = '−';
-        minus.onclick = () => { it.qty = clamp((it.qty||0) - 1, 0); update(); };
+        minus.onclick = () => { it.qty = clamp(it.qty - 1); update(); };
         const input = document.createElement('input');
         input.type = 'number';
         input.value = it.qty || 0;
-        input.onchange = (e) => { it.qty = clamp(Number(e.target.value)||0,0); update(); };
+        input.onchange = (e) => { it.qty = clamp(Number(e.target.value)); update(); };
         const plus = document.createElement('button');
         plus.className = 'btn';
         plus.textContent = '+';
-        plus.onclick = () => { it.qty = clamp((it.qty||0) + 1,0); update(); };
+        plus.onclick = () => { it.qty = clamp(it.qty + 1); update(); };
         right.appendChild(minus);
         right.appendChild(input);
         right.appendChild(plus);
